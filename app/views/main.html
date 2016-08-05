@@ -1,9 +1,22 @@
 <div id="MainContainer">
 	<div id="BDMap"></div>
+	<div class="searchiconbox"><img src="images/icon_search.png" class="img-responsive searchicon"></div>
 	<div class="searchbox">
-		<div class="searchiconbox"><img src="images/icon_search.png" class="searchicon"></a>
+		<div class="searchform">
+			<img src="images/icon_search.png" class="searchiconin">
+			<input type="text" name="roadname" placeholder="路段名称" class="inputtext">
+			<a href="javascript:;" class="cancel">取消</a>
+		</div>
+		<ul class="list-unstyled searchresult">
+			<li roadid="人民路1">人民路1 - 南向</li>
+			<li roadid="人民路1">人民路1 - 北向</li>
+			<li roadid="人民路2">人民路2 - 南向</li>
+			<li roadid="人民路2">人民路2 - 北向</li>
+			<li roadid="人民路3">人民路3 - 南向</li>
+			<li roadid="人民路3">人民路3 - 北向</li>
+		</ul>
 	</div>
+	<div class="roadiconbox"><img src="images/icon_road.png" class="img-responsive roadicon"></div>
+	<div class="roadfaviconbox"><img src="images/icon_road_fav.png" class="img-responsive roadfavicon"></div>
+	<div class="roadchartsbox"><div id="roadcharts" class="roadcharts"></div></div>
 </div>
-<style type="text/css">
-
-</style>
