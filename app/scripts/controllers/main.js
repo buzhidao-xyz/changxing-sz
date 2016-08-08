@@ -40,13 +40,18 @@ angular.module('ChangxingszAPP')
       //加载缩放控件
       $scope.BDMapObject.addControl(new BMap.NavigationControl({anchor: BMAP_ANCHOR_BOTTOM_RIGHT, type: BMAP_NAVIGATION_CONTROL_SMALL}));
 
-      $scope.BDMapObject.addEventListener("touchend", function (e){
+      var marker = new BMap.Marker(new BMap.Point(DefaultLng, DefaultLat));
+      marker.addEventListener("click", function (){
+        alert(5);
+      });
+      $scope.BDMapObject.addOverlay(marker);
+
+      // $scope.BDMapObject.disableDragging();
+
+      $scope.BDMapObject.addEventListener("click", function (e){
         var p = e.target;
-        if(p instanceof BMap.Polyline){
-          alert(1);
-          console.log(p);
-          e.domEvent.srcElement.click();
-        }
+        console.log(e);
+        e.domEvent.srcElement.click();
       });
     }
 
@@ -61,20 +66,17 @@ angular.module('ChangxingszAPP')
         points.push(new BMap.Point(point.lng,point.lat));
       }
 
-      var roadpolyline = new BMap.Polyline(points, {strokeColor:"#FF0000", strokeWeight:10, strokeOpacity:0.75});
+      var roadpolyline = new BMap.Polyline(points, {strokeColor:"#FF0000", strokeWeight:5, strokeOpacity:0.75, enableClicking:true});
       //注册点击事件
-      roadpolyline.addEventListener("touchend", roadpolylineCLick);
+      roadpolyline.addEventListener("touchstart", roadpolylineClick);
       $scope.BDMapObject.addOverlay(roadpolyline);
 
       //折线点击事件
-      function roadpolylineCLick (e){
+      function roadpolylineClick (e){
         var roadlineid = roadline.id;
 
-        var p = e.target;
-        if(p instanceof BMap.Polyline){
-          console.log(p);
-          alert(roadlineid);
-        }
+        console.log(1);
+        alert(roadlineid);
       }
     }
 
