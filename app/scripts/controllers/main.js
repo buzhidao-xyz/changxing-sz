@@ -47,8 +47,9 @@ angular.module('ChangxingszAPP')
       $scope.BDMapObject.addOverlay(marker);
 
       // $scope.BDMapObject.disableDragging();
+      $scope.BDMapObject.disableDoubleClickZoom();
 
-      $scope.BDMapObject.addEventListener("click", function (e){
+      $scope.BDMapObject.addEventListener("touchstart", function (e){
         var p = e.target;
         console.log(e);
         e.domEvent.srcElement.click();
@@ -68,7 +69,7 @@ angular.module('ChangxingszAPP')
 
       var roadpolyline = new BMap.Polyline(points, {strokeColor:"#FF0000", strokeWeight:5, strokeOpacity:0.75, enableClicking:true});
       //注册点击事件
-      roadpolyline.addEventListener("touchstart", roadpolylineClick);
+      roadpolyline.addEventListener("click", roadpolylineClick);
       $scope.BDMapObject.addOverlay(roadpolyline);
 
       //折线点击事件
