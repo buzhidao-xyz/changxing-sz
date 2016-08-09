@@ -25,6 +25,8 @@ angular.module('ChangxingszAPP')
     //BaseCtrl
     var BaseCtrl = $controller('BaseCtrl', {$rootScope: $rootScope, $scope: $scope});
 
+    $scope.BDMapObject;
+
     //BDMap对象
     $scope.BDMap = function (){
       var DefaultLat = 31.307776;
@@ -40,19 +42,11 @@ angular.module('ChangxingszAPP')
       //加载缩放控件
       $scope.BDMapObject.addControl(new BMap.NavigationControl({anchor: BMAP_ANCHOR_BOTTOM_RIGHT, type: BMAP_NAVIGATION_CONTROL_SMALL}));
 
-      var marker = new BMap.Marker(new BMap.Point(DefaultLng, DefaultLat));
-      marker.addEventListener("click", function (){
-        alert(5);
-      });
-      $scope.BDMapObject.addOverlay(marker);
-
       // $scope.BDMapObject.disableDragging();
-      $scope.BDMapObject.disableDoubleClickZoom();
+      // $scope.BDMapObject.disableDoubleClickZoom();
 
       $scope.BDMapObject.addEventListener("touchstart", function (e){
-        var p = e.target;
-        console.log(e);
-        e.domEvent.srcElement.click();
+        
       });
     }
 
@@ -67,32 +61,84 @@ angular.module('ChangxingszAPP')
         points.push(new BMap.Point(point.lng,point.lat));
       }
 
-      var roadpolyline = new BMap.Polyline(points, {strokeColor:"#FF0000", strokeWeight:5, strokeOpacity:0.75, enableClicking:true});
-      //注册点击事件
-      roadpolyline.addEventListener("click", roadpolylineClick);
+      //画线
+      var roadpolyline = new BMap.Polyline(points, {strokeColor:"#FF0000", strokeWeight:3, strokeOpacity:0.75, enableClicking:true});
       $scope.BDMapObject.addOverlay(roadpolyline);
+
+      //画点
+      var myIcon = new BMap.Icon("images/icon_marker_green_s.png", new BMap.Size(23,32), {anchor:new BMap.Size(11.5, 32)});
+      var markerindex = Math.round(points.length/2);
+      var marker = new BMap.Marker(points[markerindex], {icon:myIcon});
+      marker.addEventListener("click", roadpolylineClick);
+
+      $scope.BDMapObject.addOverlay(marker);
 
       //折线点击事件
       function roadpolylineClick (e){
-        var roadlineid = roadline.id;
+        $(".raodopbox").attr("roadid", roadline.id);
+        $(".raodopbox").find("h3").text(roadline.title);
 
-        console.log(1);
-        alert(roadlineid);
+        $(".raodopbox").show();
       }
     }
+
+    //路段弹出层操作
+    $scope.roadopbox = function (){
+      var roadopbox = $(".raodopbox");
+
+      //收藏路段
+      roadopbox.find("a.favadd").on("click", function (){
+        alert("收藏路段");
+      });
+      
+      //取消收藏
+      roadopbox.find("a.favcancel").on("click", function (){
+        alert("取消收藏");
+      });
+      
+      //历史路况
+      roadopbox.find("a.history").on("click", function (){
+        $scope.roadLineCharts();
+        $(".roadchartsbox").css("bottom", "0px");
+      });
+
+      //关闭
+      roadopbox.find("a.closex").on("click", function (){
+        roadopbox.attr("roadid", "");
+        roadopbox.find("h3").text(null);
+        roadopbox.hide();
+      });
+
+      $(".roadchartsbox").find("img.closex").on("click", function (){
+        $(".roadchartsbox").css("bottom", "-270px");
+      });
+    }
+
+    //获取收藏的路段信息
+    $scope.getFavRoadList = function (){
+      var params = {};
+      MapService.getFavRoadList(params);
+    }
+    //监听事件 - getFavRoadList.success
+    $scope.$on('getFavRoadList.success', function (event, d) {
+      $scope.$favroadlist = MapService.favroadlist;
+      for (var index in $scope.$favroadlist.roadlist) {
+        $scope.DrawLine($scope.$favroadlist.roadlist[index]);
+      }
+    });
 
     //获取路段信息
     $scope.getRoadList = function (){
       var params = {};
       MapService.getRoadList(params);
-      //监听事件 - getRoadList.success
-      $scope.$on('getRoadList.success', function (event, d) {
-        $scope.$roadlist = MapService.roadlist;
-        for (var index in $scope.$roadlist.roadlist) {
-          $scope.DrawLine($scope.$roadlist.roadlist[index]);
-        }
-      });
     }
+    //监听事件 - getRoadList.success
+    $scope.$on('getRoadList.success', function (event, d) {
+      $scope.$roadlist = MapService.roadlist;
+      for (var index in $scope.$roadlist.roadlist) {
+        $scope.DrawLine($scope.$roadlist.roadlist[index]);
+      }
+    });
 
     //路段搜索事件
     $scope.searchForm = function (){
@@ -111,10 +157,16 @@ angular.module('ChangxingszAPP')
       $(".roadiconbox .roadicon").on('click', function (){
         $(".roadiconbox").hide();
         $(".roadfaviconbox").show();
+
+        $scope.BDMapObject.clearOverlays();
+        $scope.getRoadList();
       });
       $(".roadfaviconbox .roadfavicon").on('click', function (){
         $(".roadiconbox").show();
         $(".roadfaviconbox").hide();
+
+        $scope.BDMapObject.clearOverlays();
+        $scope.getFavRoadList();
       });
     }
 
@@ -149,15 +201,6 @@ angular.module('ChangxingszAPP')
               top: 'bottom',
               data:['意向']
           },
-          toolbox: {
-              feature: {
-                  dataZoom: {
-                      yAxisIndex: 'none'
-                  },
-                  restore: {},
-                  saveAsImage: {}
-              }
-          },
           xAxis: {
               type: 'category',
               boundaryGap: false,
@@ -167,23 +210,6 @@ angular.module('ChangxingszAPP')
               type: 'value',
               boundaryGap: [0, '100%']
           },
-          dataZoom: [{
-              type: 'inside',
-              start: 0,
-              end: 10
-          }, {
-              start: 0,
-              end: 10,
-              handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-              handleSize: '80%',
-              handleStyle: {
-                  color: '#fff',
-                  shadowBlur: 3,
-                  shadowColor: 'rgba(0, 0, 0, 0.6)',
-                  shadowOffsetX: 2,
-                  shadowOffsetY: 2
-              }
-          }],
           series: [
               {
                   name:'模拟数据',
@@ -216,10 +242,10 @@ angular.module('ChangxingszAPP')
     }
 
     $scope.BDMap();
-    $scope.getRoadList();
+    $scope.getFavRoadList();
 
     $scope.searchForm();
     $scope.roadLayer();
 
-    $scope.roadLineCharts();
+    $scope.roadopbox();
   }]);
