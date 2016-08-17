@@ -10,49 +10,115 @@
 angular.module('ChangxingszAPP')
   .service('MapService', ['$rootScope', '$http', function ($rootScope, $http) {
     var service = {
-      //API - getFavRoadList
-      favroadlist: {},
-      getFavRoadList: function (params, data) {
-        var url = Api.host + Api.road.favroadlist.u;
+      apiResult: {},
+
+      //API - getRouteSubcribe
+      subcriberoutelist: {},
+      getRouteSubcribe: function (params, data) {
+        var url = Api.host + Api.route.subcribe.u;
         $http({
-          method: Api.road.favroadlist.m,
+          method: Api.route.subcribe.m,
           url: url,
           params: params,
           data: data
         }).success(function (data, status) {
-          service.favroadlist = data;
+          service.subcriberoutelist = data;
 
-          //广播事件 - getFavRoadList.success
-          $rootScope.$broadcast('getFavRoadList.success');
+          //广播事件 - getRouteSubcribe.success
+          $rootScope.$broadcast('getRouteSubcribe.success');
         }).error(function (data, status) {
-          service.roadlist = data;
+          service.subcriberoutelist = data;
 
           //广播事件 - apiRequest.failed
           $rootScope.$broadcast('apiRequest.failed');
         });
       },
 
-      //API - getRoadList
-      roadlist: {},
-      getRoadList: function (params, data) {
-        var url = Api.host + Api.road.roadlist.u;
+      //API - getRouteAll
+      routelist: {},
+      getRouteAll: function (params, data) {
+        var url = Api.host + Api.route.all.u;
         $http({
-          method: Api.road.roadlist.m,
+          method: Api.route.all.m,
           url: url,
           params: params,
           data: data
         }).success(function (data, status) {
-          service.roadlist = data;
+          service.routelist = data;
 
-          //广播事件 - getRoadList.success
-          $rootScope.$broadcast('getRoadList.success');
+          //广播事件 - getRouteAll.success
+          $rootScope.$broadcast('getRouteAll.success');
         }).error(function (data, status) {
-          service.roadlist = data;
+          service.routelist = data;
 
           //广播事件 - apiRequest.failed
           $rootScope.$broadcast('apiRequest.failed');
         });
-      }
+      },
+
+      //API - subcribe
+      subcribe: function (params, data) {
+        var url = Api.host + Api.subcribe.u;
+        $http({
+          method: Api.subcribe.m,
+          url: url,
+          params: params,
+          data: data
+        }).success(function (data, status) {
+          service.apiResult = data;
+
+          //广播事件 - subcribe.success
+          $rootScope.$broadcast('subcribe.success');
+        }).error(function (data, status) {
+          service.apiResult = data;
+
+          //广播事件 - apiRequest.failed
+          $rootScope.$broadcast('apiRequest.failed');
+        });
+      },
+
+      //API - unsubcribe
+      unsubcribe: function (params, data) {
+        var url = Api.host + Api.unsubcribe.u;
+        $http({
+          method: Api.unsubcribe.m,
+          url: url,
+          params: params,
+          data: data
+        }).success(function (data, status) {
+          service.apiResult = data;
+
+          //广播事件 - unsubcribe.success
+          $rootScope.$broadcast('unsubcribe.success');
+        }).error(function (data, status) {
+          service.apiResult = data;
+
+          //广播事件 - apiRequest.failed
+          $rootScope.$broadcast('apiRequest.failed');
+        });
+      },
+
+      //API - getEcharts
+      echarts: {},
+      getEcharts: function (params, data) {
+        var url = Api.host + Api.route.echars.u;
+        $http({
+          method: Api.route.echars.m,
+          url: url,
+          params: params,
+          data: data
+        }).success(function (data, status) {
+          service.echarts = data;
+
+          //广播事件 - getEcharts.success
+          $rootScope.$broadcast('getEcharts.success');
+        }).error(function (data, status) {
+          service.echarts = data;
+
+          //广播事件 - apiRequest.failed
+          $rootScope.$broadcast('apiRequest.failed');
+        });
+      },
     }
     return service;
   }]);

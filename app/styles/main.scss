@@ -177,10 +177,11 @@ html, body {
     position: absolute;
     width: 100%;
     height: 270px;
-    bottom: -270px;
+    bottom: 0px;
     background: rgba(255, 255, 255, 0.75);
     box-shadow: 5px 0 5px #EEE;
     overflow: hidden;
+    visibility: hidden;
 
     img.closex {
       position: absolute;
@@ -191,6 +192,8 @@ html, body {
       z-index: 9;
     }
     .roadcharts {
+      display: block;
+      position: absolute;
       width: 97%;
       height: 270px;
       left: 3%;

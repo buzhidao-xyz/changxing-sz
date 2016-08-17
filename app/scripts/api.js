@@ -5,15 +5,27 @@
  */
 var Api = {
 	//host地址
-	host: 'http://192.168.10.175:9001/api/',
-	road: {
-		roadlist: {
-		  	m: 'get',
-		  	u: 'roadlist.json'
-		},
-		favroadlist: {
+	host: 'http://wx.ilisin.xlh-tech.com/api/',
+	route: {
+		subcribe: {
 			m: 'get',
-	  		u: 'favroadlist.json'
+			u: 'route/subcribe'
+		},
+		all: {
+			m: 'get',
+	  		u: 'route/all'
+		},
+		echars: {
+			m: 'get',
+	  		u: 'route/echars_option'
 		}
+	},
+	subcribe: {
+		m: 'get',
+		u: 'subcribe'
+	},
+	unsubcribe: {
+		m: 'get',
+		u: 'unsubcribe'
 	}
 };

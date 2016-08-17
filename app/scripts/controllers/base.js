@@ -33,7 +33,7 @@ angular.module('ChangxingszAPP')
 
       //页面msg提示
       $scope.alertShow = function (msg, flag) {
-        // alert(msg);
+        alert(msg);
       }
 
       //监听事件 - apiRequest.failed
@@ -74,7 +74,7 @@ angular.module('ChangxingszAPP')
       };
 
       //统一API请求数据处理方法
-      $scope.apiRequestData = function (data) {
+      $scope.apiRequest = function (data) {
         var data = data ? data : {
           sessionid: ""
         }
@@ -88,13 +88,14 @@ angular.module('ChangxingszAPP')
       //统一API返回数据处理方法
       $scope.apiResult = function (data, params) {
         //如果status==0 成功
-        if (data.status == 0) {
-          return data.data;
-        } else if (data.status == -4) {
-          //未登录用户
-          $location.path('/login');
+        if (data.error == 0) {
+          if ("data" in data) {
+            return data.data;
+          } else {
+            return true;
+          }
         } else {
-          $scope.alertShow($scope.errormsg);
+          $scope.alertShow(data.msg);
         }
       }
 
@@ -102,7 +103,7 @@ angular.module('ChangxingszAPP')
         alertShow: $scope.alertShow,
         gsuserinfo: $scope.gsuserinfo,
         ususerinfo: $scope.ususerinfo,
-        apiRequestData: $scope.apiRequestData,
+        apiRequest: $scope.apiRequest,
         apiResult: $scope.apiResult
       }
     }]);
