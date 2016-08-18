@@ -110,10 +110,11 @@ angular.module('ChangxingszAPP')
       // $scope.BDMapObject.addOverlay(marker);
 
       var markerindex = $scope.MapMarkers.length;
-      $scope.MapMarkers[markerindex] = {
+      var routemarker = {
         "marker": marker,
         "roadpolyline": roadpolyline
       };
+      $scope.MapMarkers[markerindex] = routemarker;
 
       //折线点击事件
       function roadpolylineClick (e){
@@ -127,6 +128,8 @@ angular.module('ChangxingszAPP')
       //   "marker": marker,
       //   "roadpolyline": roadpolyline
       // });
+      
+      return routemarker;
     }
 
     //画点和线
@@ -237,7 +240,7 @@ angular.module('ChangxingszAPP')
     $scope.$on('searchRoute.success', function (event, d) {
       $scope.$searchresult = $scope.apiResult(MapService.searchresult);
 
-      $scope.$routelist = $scope.$searchresult.routes;
+      $scope.$routeresultlist = $scope.$searchresult.routes;
     });
 
     //订阅路段
@@ -356,6 +359,22 @@ angular.module('ChangxingszAPP')
         $scope.searchRoute(roadkeyword);
       });
     }
+    //搜索结果路段点击事件
+    $scope.searchRouteClick = function ($route){
+      var routeMarker = $scope.DrawLine($route);
+
+      $scope.BDMapObject.addOverlay(routeMarker.marker);
+      $scope.BDMapObject.addOverlay(routeMarker.roadpolyline);
+
+      console.log(routeMarker.marker.getPosition());
+
+      //初始化地图对象
+      $scope.BDMapObject.setZoom(20);
+      $scope.BDMapObject.panTo(routeMarker.marker.getPosition());
+
+      $(".searchbox").hide();
+      $(".searchiconbox").show();
+    }
 
     //路段图层切换
     $scope.roadLayer = function (){
@@ -363,11 +382,15 @@ angular.module('ChangxingszAPP')
         $(".roadiconbox").hide();
         $(".roadfaviconbox").show();
 
+        $(".roadopbox").hide();
+
         $scope.getRouteAll();
       });
       $(".roadfaviconbox .roadfavicon").on('click', function (){
         $(".roadiconbox").show();
         $(".roadfaviconbox").hide();
+
+        $(".roadopbox").hide();
 
         $scope.getRouteSubcribe();
       });
