@@ -4,21 +4,16 @@
 	<div class="searchbox">
 		<div class="searchform">
 			<img src="images/icon_search.png" class="searchiconin">
-			<input type="text" name="roadname" placeholder="路段名称" class="inputtext">
-			<a href="javascript:;" class="cancel">取消</a>
+			<input type="text" name="roadkeyword" placeholder="路段名称" class="inputtext">
+			<a href="javascript:;" class="search">搜索</a>
 		</div>
 		<ul class="list-unstyled searchresult">
-			<li route_id="人民路1" direction_name="">人民路1 - 南向</li>
-			<li route_id="人民路1" direction_name="">人民路1 - 北向</li>
-			<li route_id="人民路2" direction_name="">人民路2 - 南向</li>
-			<li route_id="人民路2" direction_name="">人民路2 - 北向</li>
-			<li route_id="人民路3" direction_name="">人民路3 - 南向</li>
-			<li route_id="人民路3" direction_name="">人民路3 - 北向</li>
+			<li route_id="{{$route.route_id}}" direction_name="{{$route.direction_name}}" ng-repeat="$route in $routelist" ng-click="">{{$route.route_id}} - {{$route.direction_name}}</li>
 		</ul>
 	</div>
 	<div class="roadiconbox"><img src="images/icon_road.png" class="img-responsive roadicon"></div>
 	<div class="roadfaviconbox"><img src="images/icon_road_fav.png" class="img-responsive roadfavicon"></div>
-	<div class="raodopbox text-center" route_id="" direction_name="">
+	<div class="roadopbox text-center" route_id="" direction_name="" markerindex="">
 		<h3></h3>
 		<a href="javascript:;" class="btn btn-block subcribe">订阅路段</a>
 		<a href="javascript:;" class="btn btn-block unsubcribe">取消订阅</a>

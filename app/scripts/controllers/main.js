@@ -28,6 +28,8 @@ angular.module('ChangxingszAPP')
     $scope.BDMapObject;
     $scope.MapMarkers = [];
 
+    $scope.markerindex;
+
     //地图route类型 1订阅路段 2全部路段
     $scope.MapRouteType = 1;
 
@@ -49,8 +51,10 @@ angular.module('ChangxingszAPP')
       // $scope.BDMapObject.disableDragging();
       // $scope.BDMapObject.disableDoubleClickZoom();
 
-      $scope.BDMapObject.addEventListener("touchstart", function (e){
-        
+      $scope.BDMapObject.addEventListener("touchend", function (e){
+        $(".searchbox").hide();
+        $(".searchiconbox").show();
+        $(".roadopbox").hide();
       });
 
       $scope.BDMapObject.addEventListener("zoomend", function (e){
@@ -72,8 +76,29 @@ angular.module('ChangxingszAPP')
         points.push(new BMap.Point(point.x,point.y));
       }
 
+      //路段颜色
+      var color = "#FF0000";
+      switch (roadline.description) {
+        case "严重拥堵":
+          color = "#B50008"
+          break;
+        case "基本拥堵":
+        case "拥挤":
+        case "拥堵":
+          color = "#EC2C33"
+          break;
+        case "缓行":
+          color = "#FA9D30"
+          break;
+        case "畅通":
+          color = "#3ABD2C"
+          break;
+        default:
+          break;
+      }
+
       //画线
-      var roadpolyline = new BMap.Polyline(points, {strokeColor:"#FF0000", strokeWeight:3, strokeOpacity:0.75, enableClicking:true});
+      var roadpolyline = new BMap.Polyline(points, {strokeColor:color, strokeWeight:3, strokeOpacity:0.75, enableClicking:true});
 
       //画点
       var myIcon = new BMap.Icon("images/icon_marker_green_s.png", new BMap.Size(15,20), {anchor:new BMap.Size(7.5, 20)});
@@ -84,18 +109,24 @@ angular.module('ChangxingszAPP')
       // $scope.BDMapObject.addOverlay(roadpolyline);
       // $scope.BDMapObject.addOverlay(marker);
 
-      //折线点击事件
-      function roadpolylineClick (e){
-        $(".raodopbox").attr("route_id", roadline.route_id).attr("direction_name", roadline.direction_name);
-        $(".raodopbox").find("h3").text(roadline.route_id+"("+roadline.direction_name+")");
-
-        $(".raodopbox").show();
-      }
-
-      $scope.MapMarkers.push({
+      var markerindex = $scope.MapMarkers.length;
+      $scope.MapMarkers[markerindex] = {
         "marker": marker,
         "roadpolyline": roadpolyline
-      });
+      };
+
+      //折线点击事件
+      function roadpolylineClick (e){
+        $(".roadopbox").attr("route_id", roadline.route_id).attr("direction_name", roadline.direction_name).attr("markerindex", markerindex);
+        $(".roadopbox").find("h3").text(roadline.route_id+"("+roadline.direction_name+")");
+
+        $scope.subcribecheck(roadline.route_id, roadline.direction_name);
+      }
+
+      // $scope.MapMarkers.push({
+      //   "marker": marker,
+      //   "roadpolyline": roadpolyline
+      // });
     }
 
     //画点和线
@@ -107,20 +138,20 @@ angular.module('ChangxingszAPP')
 
       var n = 10, i = 0;
       if (zoom <= 13) n = 10;
-      if (zoom == 14) n = 30;
-      if (zoom == 15) n = 50;
+      if (zoom==14 || zoom==15) n = 30;
+      if (zoom==16) n = 50;
+      if (zoom==17) n = 70;
       for (var index in $scope.MapMarkers) {
         var marker = $scope.MapMarkers[index]["marker"];
         var roadpolyline = $scope.MapMarkers[index]["roadpolyline"];
 
-        if (bounds.containsPoint(marker.getPosition())) {
+        // if (bounds.containsPoint(marker.getPosition())) {
           if (zoom >= 15) {
             $scope.BDMapObject.addOverlay(roadpolyline);
           }
-        }
+        // }
 
-        console.log($scope.MapRouteType);
-        if ($scope.MapRouteType==2 && zoom<=15) {
+        if ($scope.MapRouteType==2 && zoom<=17) {
           var step = Math.floor($scope.MapMarkers.length/n);
           if (index != i*step) continue;
           i++;
@@ -139,8 +170,6 @@ angular.module('ChangxingszAPP')
     }
     //监听事件 - getRouteSubcribe.success
     $scope.$on('getRouteSubcribe.success', function (event, d) {
-      $scope.MapRouteType == 1;
-
       $scope.$subcriberoutelist = $scope.apiResult(MapService.subcriberoutelist);
 
       $scope.MapMarkers = [];
@@ -148,6 +177,7 @@ angular.module('ChangxingszAPP')
         $scope.DrawLine($scope.$subcriberoutelist.routes[index]);
       }
       
+      $scope.MapRouteType = 1;
       $scope.DrawMap();
     });
 
@@ -158,8 +188,6 @@ angular.module('ChangxingszAPP')
     }
     //监听事件 - getRouteAll.success
     $scope.$on('getRouteAll.success', function (event, d) {
-      $scope.MapRouteType == 2;
-
       $scope.$routelist = $scope.apiResult(MapService.routelist);
 
       $scope.MapMarkers = [];
@@ -167,7 +195,49 @@ angular.module('ChangxingszAPP')
         $scope.DrawLine($scope.$routelist.routes[index]);
       }
 
+      $scope.MapRouteType = 2;
       $scope.DrawMap();
+    });
+
+    //获取历史路况
+    $scope.subcribecheck = function (route_id, direction_name){
+      var params = {
+        route_id: route_id,
+        direction_name: direction_name
+      };
+      MapService.subcribecheck(params);
+    }
+    //监听事件 - subcribecheck.success
+    $scope.$on('subcribecheck.success', function (event, d) {
+      $scope.$apiResult = MapService.apiResult;
+
+      if ($scope.$apiResult.error) {
+        $scope.alertShow($scope.$apiResult.msg);
+      } else {
+        if ($scope.$apiResult.result) {
+          $(".roadopbox").find("a.subcribe").hide();
+          $(".roadopbox").find("a.unsubcribe").show();
+        } else {
+          $(".roadopbox").find("a.subcribe").show();
+          $(".roadopbox").find("a.unsubcribe").hide();
+        }
+
+        $(".roadopbox").show();
+      }
+    });
+
+    //搜索路段信息
+    $scope.searchRoute = function (keyword){
+      var params = {
+        keyword: keyword
+      };
+      MapService.searchRoute(params);
+    }
+    //监听事件 - searchRoute.success
+    $scope.$on('searchRoute.success', function (event, d) {
+      $scope.$searchresult = $scope.apiResult(MapService.searchresult);
+
+      $scope.$routelist = $scope.$searchresult.routes;
     });
 
     //订阅路段
@@ -195,10 +265,19 @@ angular.module('ChangxingszAPP')
     //监听事件 - unsubcribe.success
     $scope.$on('unsubcribe.success', function (event, d) {
       $scope.$apiResult = $scope.apiResult(MapService.apiResult);
-      if ($scope.$apiResult) $scope.alertShow("已取消订阅！");
+      if ($scope.$apiResult) {
+        $scope.alertShow("已取消订阅！");
+
+        //移除路段marker
+        var marker = $scope.MapMarkers[$scope.markerindex].marker;
+        $scope.BDMapObject.removeOverlay(marker);
+        //移除路段roadpolyline
+        // var roadpolyline = $scope.MapMarkers[$scope.markerindex].roadpolyline;
+        // $scope.BDMapObject.removeOverlay(roadpolyline);
+      }
     });
 
-    //获取历史路况
+    //查询是否收藏过某路段
     $scope.getEcharts = function (route_id, direction_name){
       var params = {
         route_id: route_id,
@@ -221,7 +300,7 @@ angular.module('ChangxingszAPP')
 
     //路段弹出层操作
     $scope.roadopbox = function (){
-      var roadopbox = $(".raodopbox");
+      var roadopbox = $(".roadopbox");
 
       //订阅路段
       roadopbox.find("a.subcribe").on("click", function (){
@@ -239,6 +318,7 @@ angular.module('ChangxingszAPP')
         var direction_name = roadopbox.attr("direction_name");
         
         $scope.unsubcribe(route_id, direction_name);
+        $scope.markerindex = roadopbox.attr("markerindex");
 
         roadopbox.find("a.closex").click();
       });
@@ -269,9 +349,12 @@ angular.module('ChangxingszAPP')
         $(".searchiconbox").hide();
         $(".searchbox").show();
       });
-      $(".searchbox a.cancel").on('click', function (){
-        $(".searchiconbox").show();
-        $(".searchbox").hide();
+
+      //搜索事件
+      $(".searchbox a.search").on('click', function (){
+        var roadkeyword = $("input[name=roadkeyword]").val();
+
+        $scope.searchRoute(roadkeyword);
       });
     }
 
@@ -289,7 +372,6 @@ angular.module('ChangxingszAPP')
 
         $scope.getRouteSubcribe();
       });
-
     }
 
     //生成折线图

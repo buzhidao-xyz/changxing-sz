@@ -5,7 +5,7 @@
  */
 var Api = {
 	//host地址
-	host: 'http://wx.ilisin.xlh-tech.com/api/',
+	host: 'http://192.168.10.108:8080/api/',
 	route: {
 		subcribe: {
 			m: 'get',
@@ -18,6 +18,10 @@ var Api = {
 		echars: {
 			m: 'get',
 	  		u: 'route/echars_option'
+		},
+		subcribecheck: {
+			m: 'get',
+	  		u: 'route/subcribe/check'
 		}
 	},
 	subcribe: {

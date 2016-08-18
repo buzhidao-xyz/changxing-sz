@@ -56,6 +56,49 @@ angular.module('ChangxingszAPP')
         });
       },
 
+      //API - subcribecheck
+      subcribecheck: function (params, data) {
+        var url = Api.host + Api.route.subcribecheck.u;
+        $http({
+          method: Api.route.subcribecheck.m,
+          url: url,
+          params: params,
+          data: data
+        }).success(function (data, status) {
+          service.apiResult = data;
+
+          //广播事件 - subcribecheck.success
+          $rootScope.$broadcast('subcribecheck.success');
+        }).error(function (data, status) {
+          service.apiResult = data;
+
+          //广播事件 - apiRequest.failed
+          $rootScope.$broadcast('apiRequest.failed');
+        });
+      },
+
+      //API - searchRoute
+      searchresult: {},
+      searchRoute: function (params, data) {
+        var url = Api.host + Api.route.all.u;
+        $http({
+          method: Api.route.all.m,
+          url: url,
+          params: params,
+          data: data
+        }).success(function (data, status) {
+          service.searchresult = data;
+
+          //广播事件 - searchRoute.success
+          $rootScope.$broadcast('searchRoute.success');
+        }).error(function (data, status) {
+          service.searchresult = data;
+
+          //广播事件 - apiRequest.failed
+          $rootScope.$broadcast('apiRequest.failed');
+        });
+      },
+
       //API - subcribe
       subcribe: function (params, data) {
         var url = Api.host + Api.subcribe.u;
