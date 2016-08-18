@@ -292,7 +292,6 @@ angular.module('ChangxingszAPP')
       if ($scope.$echarts.error) {
         $scope.alertShow($scope.$echarts.msg);
       } else {
-        console.log($scope.$echarts.option);
         $scope.roadLineCharts($scope.$echarts.option);
         $(".roadchartsbox").css("visibility", "visible");
       }
