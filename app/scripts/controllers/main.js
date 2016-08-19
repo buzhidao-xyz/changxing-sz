@@ -77,16 +77,17 @@ angular.module('ChangxingszAPP')
       }
 
       //路段颜色
-      var color = "#FF0000";
+      var color = "#3ABD2C";
       switch (roadline.description) {
         case "严重拥堵":
           color = "#B50008"
           break;
         case "基本拥堵":
-        case "拥挤":
         case "拥堵":
+        case "拥挤":
           color = "#EC2C33"
           break;
+        case "基本畅通":
         case "缓行":
           color = "#FA9D30"
           break;
