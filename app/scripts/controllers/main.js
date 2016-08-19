@@ -231,6 +231,8 @@ angular.module('ChangxingszAPP')
 
     //搜索路段信息
     $scope.searchRoute = function (keyword){
+      if (!keyword) return false;
+
       var params = {
         keyword: keyword
       };
@@ -366,10 +368,8 @@ angular.module('ChangxingszAPP')
       $scope.BDMapObject.addOverlay(routeMarker.marker);
       $scope.BDMapObject.addOverlay(routeMarker.roadpolyline);
 
-      console.log(routeMarker.marker.getPosition());
-
       //初始化地图对象
-      $scope.BDMapObject.setZoom(20);
+      $scope.BDMapObject.setZoom(19);
       $scope.BDMapObject.panTo(routeMarker.marker.getPosition());
 
       $(".searchbox").hide();
