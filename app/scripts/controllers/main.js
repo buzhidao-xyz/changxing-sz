@@ -99,7 +99,7 @@ angular.module('ChangxingszAPP')
       }
 
       //画线
-      var roadpolyline = new BMap.Polyline(points, {strokeColor:color, strokeWeight:3, strokeOpacity:0.75, enableClicking:true});
+      var roadpolyline = new BMap.Polyline(points, {strokeColor:color, strokeWeight:2, strokeOpacity:0.75, enableClicking:true});
 
       //画点
       var myIcon = new BMap.Icon("images/icon_marker_green_s.png", new BMap.Size(15,20), {anchor:new BMap.Size(7.5, 20)});
