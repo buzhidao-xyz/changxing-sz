@@ -485,11 +485,11 @@ angular.module('ChangxingszAPP')
       $scope.$on('getProfile.success', function (event, d) {
         $scope.$uprofile = $scope.apiResult(MapService.uprofile);
 
-        $scope.BDMapACHome.setInputValue($scope.$uprofile.live_place);
-        $scope.BDMapACWork.setInputValue($scope.$uprofile.work_place);
+        if ("live_place" in $scope.$uprofile) $scope.BDMapACHome.setInputValue($scope.$uprofile.live_place);
+        if ("work_place" in $scope.$uprofile) $scope.BDMapACWork.setInputValue($scope.$uprofile.work_place);
 
-        $("form input[name=worktime]").val($scope.$uprofile.towork_time);
-        $("form input[name=hometime]").val($scope.$uprofile.endwork_time);
+        if ("towork_time" in $scope.$uprofile) $("form input[name=worktime]").val($scope.$uprofile.towork_time);
+        if ("endwork_time" in $scope.$uprofile) $("form input[name=hometime]").val($scope.$uprofile.endwork_time);
       });
     };
 
