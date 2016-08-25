@@ -441,8 +441,8 @@ angular.module('ChangxingszAPP')
 
     //myprofile
     $scope.myProfile = function (){
-      var BDMap = new BMap.Map("BDMap");
-      BDMap.centerAndZoom("苏州",12);
+      var BDMapP = new BMap.Map("BDMapP");
+      BDMapP.centerAndZoom("苏州",12);
 
       var onHighLight = function(e) {
         var str = "";
@@ -465,14 +465,14 @@ angular.module('ChangxingszAPP')
       //homeplace
       $scope.BDMapACHome = new BMap.Autocomplete({
         "input" : "homeplace",
-        "location" : BDMap
+        "location" : BDMapP
       });
       $scope.BDMapACHome.addEventListener("onhighlight", onHighLight);
 
       //workplace
       $scope.BDMapACWork = new BMap.Autocomplete({
         "input" : "workplace",
-        "location" : BDMap
+        "location" : BDMapP
       });
       $scope.BDMapACWork.addEventListener("onhighlight", onHighLight);
 
@@ -541,6 +541,9 @@ angular.module('ChangxingszAPP')
     //页面逻辑
     switch ($rootScope.path) {
       case '/':
+        $scope.BDMapObject;
+        $scope.MapMarkers = [];
+
         $scope.BDMap();
         $scope.getRouteSubcribe();
 
