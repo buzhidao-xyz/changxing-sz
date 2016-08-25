@@ -157,6 +157,18 @@ html, body {
     border: 1px solid #E1E1E1;
   }
 
+  .userinfobox {
+    display: block;
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    top: 90px;
+    right: 10px;
+    background: #FFFFFF;
+    cursor: pointer;
+    border: 1px solid #E1E1E1;
+  }
+
   .roadopbox {
     display: none;
     position: absolute;
