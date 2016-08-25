@@ -506,10 +506,10 @@ angular.module('ChangxingszAPP')
       }
 
       var params = {
-        homeplace: homeplace,
-        worktime: worktime,
-        workplace: workplace,
-        hometime: hometime
+        live_place: homeplace,
+        towork_time: worktime,
+        work_place: workplace,
+        endwork_time: hometime
       };
       MapService.ProfileSave(params);
     }
