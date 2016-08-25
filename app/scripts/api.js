@@ -5,7 +5,7 @@
  */
 var Api = {
 	//host地址
-	host: 'http://192.168.10.175:9001/api/',
+	host: '/api/',
 	route: {
 		subcribe: {
 			m: 'get',

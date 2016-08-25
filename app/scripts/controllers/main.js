@@ -422,23 +422,6 @@ angular.module('ChangxingszAPP')
       roadChartsObject.setOption(option);
     }
 
-    //获取推荐placelist
-    $scope.mapSuggestion = function (query){
-      var params = {
-        q: query,
-        region: '苏州市',
-        output: 'json',
-        ak: 'fGXID5R8BVAvRsg6ahhSYejoGxT23wb8'
-      };
-      MapService.mapSuggestion(params);
-    }
-    //监听事件 - mapSuggestion.success
-    $scope.$on('mapSuggestion.success', function (event, d) {
-      $scope.$placelist = MapService.placelist;
-
-      console.log($scope.$placelist);
-    });
-
     //myprofile
     $scope.myProfile = function (){
       var BDMapP = new BMap.Map("BDMapP");
@@ -485,11 +468,14 @@ angular.module('ChangxingszAPP')
       $scope.$on('getProfile.success', function (event, d) {
         $scope.$uprofile = $scope.apiResult(MapService.uprofile);
 
-        if ("live_place" in $scope.$uprofile) $scope.BDMapACHome.setInputValue($scope.$uprofile.live_place);
-        if ("work_place" in $scope.$uprofile) $scope.BDMapACWork.setInputValue($scope.$uprofile.work_place);
+        if (!$scope.$uprofile) {
+        } else {
+          $scope.BDMapACHome.setInputValue($scope.$uprofile.live_place);
+          $scope.BDMapACWork.setInputValue($scope.$uprofile.work_place);
 
-        if ("towork_time" in $scope.$uprofile) $("form input[name=worktime]").val($scope.$uprofile.towork_time);
-        if ("endwork_time" in $scope.$uprofile) $("form input[name=hometime]").val($scope.$uprofile.endwork_time);
+          $("form input[name=worktime]").val($scope.$uprofile.towork_time);
+          $("form input[name=hometime]").val($scope.$uprofile.endwork_time);
+        }
       });
     };
 
