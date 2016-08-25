@@ -46,6 +46,14 @@ html, body {
   margin: 0;
   padding: 0;
 
+  .freeindex {
+    display: block;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #009900;
+  }
+
   .searchiconbox {
     display: block;
     position: absolute;

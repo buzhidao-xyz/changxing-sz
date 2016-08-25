@@ -91,6 +91,8 @@ angular.module('ChangxingszAPP')
         if (data.error == 0) {
           if ("data" in data) {
             return data.data;
+          } else if ("result" in data) {
+            return data.result;
           } else {
             return true;
           }

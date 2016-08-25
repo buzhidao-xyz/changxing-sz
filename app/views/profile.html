@@ -1,0 +1,58 @@
+<div id="MainContainer">
+	<div id="BDMap"></div>
+	<div class="profilebox">
+		<form name="profileform" method="post" action="javascript:;" ng-submit="ProfileSave()">
+			<div class="form-group">
+				<label>居住地：</label>
+				<input type="text" name="homeplace" value="" class="form-control" id="homeplace" placeholder="居住地 例：XX路XX小区">
+			</div>
+			<div class="form-group">
+				<label>上班出发时间：</label>
+				<input type="time" name="worktime" value="" class="form-control" id="worktime" placeholder="上班时间 例：上午8:30">
+			</div>
+			<div class="form-group">
+				<label>工作地：</label>
+				<input type="text" name="workplace" value="" class="form-control" id="workplace" placeholder="工作地 例：某写字楼">
+			</div>
+			<div class="form-group">
+				<label>下班出发时间：</label>
+				<input type="time" name="hometime" value="" class="form-control" id="hometime" placeholder="下班时间 例：下午6:00">
+			</div>
+			<button type="submit" class="btn btn-primary center-block">保存</button>
+		</form>
+	</div>
+	<ul id="placebox" class="placebox list-unstyled"></ul>
+</div>
+<style type="text/css">
+#BDMap {
+	display: none;
+}
+.profilebox {
+	width: 90%;
+	margin: 30px auto;
+}
+ul.placebox {
+	display: none;
+	width: 90%;
+	margin: 0 5%;
+	position: absolute;
+	border: 1px solid #CCCCCC;
+	padding: 5px 0;
+}
+ul.placebox li {
+	padding: 1px 3px;
+	padding-right: 10px;
+}
+ul.placebox li:hover {
+	background: #F5F5F5;
+}
+ul.placebox li span.name {
+	color: #000000;
+	font-size: 15px;
+}
+ul.placebox li span.address {
+	color: #C1C1C1;
+	font-size: 14px;
+	margin-left: 10px;
+}
+</style>

@@ -162,6 +162,70 @@ angular.module('ChangxingszAPP')
           $rootScope.$broadcast('apiRequest.failed');
         });
       },
+
+      //API - getProfile
+      uprofile: {},
+      getProfile: function (params, data) {
+        var url = Api.host + Api.user.uinfo.u;
+        $http({
+          method: Api.user.uinfo.m,
+          url: url,
+          params: params,
+          data: data
+        }).success(function (data, status) {
+          service.uprofile = data;
+
+          //广播事件 - getProfile.success
+          $rootScope.$broadcast('getProfile.success');
+        }).error(function (data, status) {
+          service.uprofile = data;
+
+          //广播事件 - apiRequest.failed
+          $rootScope.$broadcast('apiRequest.failed');
+        });
+      },
+
+      //API - ProfileSave
+      ProfileSave: function (params, data) {
+        var url = Api.host + Api.user.completeinfo.u;
+        $http({
+          method: Api.user.completeinfo.m,
+          url: url,
+          params: params,
+          data: data
+        }).success(function (data, status) {
+          service.apiResult = data;
+
+          //广播事件 - ProfileSave.success
+          $rootScope.$broadcast('ProfileSave.success');
+        }).error(function (data, status) {
+          service.apiResult = data;
+
+          //广播事件 - apiRequest.failed
+          $rootScope.$broadcast('apiRequest.failed');
+        });
+      },
+
+      //API - freeindex
+      FreeIndex: function (params, data) {
+        var url = Api.host + Api.free.mindex.u;
+        $http({
+          method: Api.free.mindex.m,
+          url: url,
+          params: params,
+          data: data
+        }).success(function (data, status) {
+          service.apiResult = data;
+
+          //广播事件 - FreeIndex.success
+          $rootScope.$broadcast('FreeIndex.success');
+        }).error(function (data, status) {
+          service.apiResult = data;
+
+          //广播事件 - apiRequest.failed
+          $rootScope.$broadcast('apiRequest.failed');
+        });
+      }
     }
     return service;
   }]);

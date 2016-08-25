@@ -5,7 +5,7 @@
  */
 var Api = {
 	//host地址
-	host: 'http://192.168.10.108:8080/api/',
+	host: 'http://192.168.10.175:9001/api/',
 	route: {
 		subcribe: {
 			m: 'get',
@@ -31,5 +31,21 @@ var Api = {
 	unsubcribe: {
 		m: 'get',
 		u: 'unsubcribe'
+	},
+	user: {
+		uinfo: {
+			m: 'get',
+			u: 'user/info'
+		},
+		completeinfo: {
+			m: 'get',
+			u: 'user/complete_info'
+		}
+	},
+	free: {
+		mindex: {
+			m: 'get',
+			u: 'free/index'
+		}
 	}
 };

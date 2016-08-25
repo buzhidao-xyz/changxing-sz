@@ -303,6 +303,22 @@ angular.module('ChangxingszAPP')
       }
     });
 
+    //获取畅行指数
+    $scope.FreeIndex = function (){
+      var params = {};
+      MapService.FreeIndex(params);
+    }
+    //监听事件 - FreeIndex.success
+    $scope.$on('FreeIndex.success', function (event, d) {
+      $scope.$apiResult = MapService.apiResult;
+
+      $scope.$freeindex = $scope.$apiResult.index;
+
+      setTimeout(function (){
+        $scope.FreeIndex();
+      }, 300000);
+    });
+
     //路段弹出层操作
     $scope.roadopbox = function (){
       var roadopbox = $(".roadopbox");
@@ -406,11 +422,140 @@ angular.module('ChangxingszAPP')
       roadChartsObject.setOption(option);
     }
 
-    $scope.BDMap();
-    $scope.getRouteSubcribe();
+    //获取推荐placelist
+    $scope.mapSuggestion = function (query){
+      var params = {
+        q: query,
+        region: '苏州市',
+        output: 'json',
+        ak: 'fGXID5R8BVAvRsg6ahhSYejoGxT23wb8'
+      };
+      MapService.mapSuggestion(params);
+    }
+    //监听事件 - mapSuggestion.success
+    $scope.$on('mapSuggestion.success', function (event, d) {
+      $scope.$placelist = MapService.placelist;
 
-    $scope.searchForm();
-    $scope.roadLayer();
+      console.log($scope.$placelist);
+    });
 
-    $scope.roadopbox();
+    //myprofile
+    $scope.myProfile = function (){
+      var BDMap = new BMap.Map("BDMap");
+      BDMap.centerAndZoom("苏州",12);
+
+      var onHighLight = function(e) {
+        var str = "";
+        var _value = e.fromitem.value;
+        var value = "";
+        if (e.fromitem.index > -1) {
+          value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+        }    
+        str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+        
+        value = "";
+        if (e.toitem.index > -1) {
+          _value = e.toitem.value;
+          value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+        }    
+        str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+        $("#placebox").innerHTML = str;
+      }
+
+      //homeplace
+      $scope.BDMapACHome = new BMap.Autocomplete({
+        "input" : "homeplace",
+        "location" : BDMap
+      });
+      $scope.BDMapACHome.addEventListener("onhighlight", onHighLight);
+
+      //workplace
+      $scope.BDMapACWork = new BMap.Autocomplete({
+        "input" : "workplace",
+        "location" : BDMap
+      });
+      $scope.BDMapACWork.addEventListener("onhighlight", onHighLight);
+
+      //获取个人信息
+      $scope.getProfile = function (){
+        var params = {};
+        MapService.getProfile(params);
+      }();
+      //监听事件 - getProfile.success
+      $scope.$on('getProfile.success', function (event, d) {
+        $scope.$uprofile = $scope.apiResult(MapService.uprofile);
+
+        $scope.BDMapACHome.setInputValue($scope.$uprofile.live_place);
+        $scope.BDMapACWork.setInputValue($scope.$uprofile.work_place);
+
+        $("form input[name=worktime]").val($scope.$uprofile.towork_time);
+        $("form input[name=hometime]").val($scope.$uprofile.endwork_time);
+      });
+    };
+
+    //保存个人信息
+    $scope.ProfileSave = function (){
+      var homeplace = $("form input[name=homeplace]").val();
+      if (!homeplace) {
+        $scope.alertShow('请填写居住地！');
+        return false;
+      }
+
+      var worktime = $("form input[name=worktime]").val();
+      if (!worktime) {
+        $scope.alertShow('请填写上班出发时间！');
+        return false;
+      }
+
+      var workplace = $("form input[name=workplace]").val();
+      if (!workplace) {
+        $scope.alertShow('请填写工作地！');
+        return false;
+      }
+
+      var hometime = $("form input[name=hometime]").val();
+      if (!hometime) {
+        $scope.alertShow('请填写下班出发时间！');
+        return false;
+      }
+
+      var params = {
+        homeplace: homeplace,
+        worktime: worktime,
+        workplace: workplace,
+        hometime: hometime
+      };
+      MapService.ProfileSave(params);
+    }
+    //监听事件 - ProfileSave.success
+    $scope.$on('ProfileSave.success', function (event, d) {
+      $scope.$apiResult = MapService.apiResult;
+
+      if ($scope.$apiResult.error) {
+        $scope.alertShow($scope.$apiResult.msg);
+      } else {
+        $scope.alertShow('保存成功！');
+      }
+    });
+
+    //页面逻辑
+    switch ($rootScope.path) {
+      case '/':
+        $scope.BDMap();
+        $scope.getRouteSubcribe();
+
+        $scope.FreeIndex();
+
+        $scope.searchForm();
+        $scope.roadLayer();
+
+        $scope.roadopbox();
+      break;
+      case '/profile':
+        $scope.myProfile();
+      break;
+      default:
+      break;
+    }
+      
   }]);

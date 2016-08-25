@@ -1,0 +1,13 @@
+{
+    "error":0,
+    "msg":"",
+    "result":{
+        "id":"15f111",
+        "name":"步知道",
+        "avatar":"",
+        "live_place":"海德公园",
+        "work_place":"建屋商务汇",
+        "towork_time":"09:00",
+        "endwork_time":"06:00"
+    }
+}
