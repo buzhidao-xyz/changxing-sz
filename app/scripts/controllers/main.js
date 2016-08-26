@@ -313,6 +313,18 @@ angular.module('ChangxingszAPP')
       $scope.$apiResult = MapService.apiResult;
 
       $scope.$freeindex = $scope.$apiResult.index;
+      $scope.$freeindex_color = '#009900';
+      if ($scope.$freeindex < 40) {
+        $scope.$freeindex_color = '#B50008';
+      } else if ($scope.$freeindex < 60) {
+        $scope.$freeindex_color = '#EC2C33';
+      } else if ($scope.$freeindex < 80) {
+        $scope.$freeindex_color = '#FA9D30';
+      } else if ($scope.$freeindex < 100) {
+        $scope.$freeindex_color = '#3ABD2C';
+      } else {
+        $scope.$freeindex_color = '#009900';
+      }
 
       setTimeout(function (){
         $scope.FreeIndex();
